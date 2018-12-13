@@ -13,12 +13,13 @@ import os
 import json
 import pandas as pd
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import Column, Date, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 
 # Import local modules
 import parse_schedule
 import get_news
+from weather_api_table import build_weather_table
 
 
 def main():
@@ -35,6 +36,10 @@ def main():
     tables = parse_schedule.parseJson(schedule)
     # Get news table
     tables['news'] = getNews(tables['teams'])
+    # Get weather table
+    tables['weather'] = build_weather_table(tables['venues']['zip'].values)
+    #weather = build_weather_table(tables['venues']['zip'].values)
+    print(tables['weather'].head())
     # Create database schema
     engine = createDatabase(dirname)
     # Append tables to database
@@ -155,6 +160,23 @@ def createDatabase(dirname):
         source = Column('source', String)
         title = Column('title', String)
         url = Column('url', String)
+
+    class weather(Base):
+
+        __tablename__ = 'weather'
+
+        weather_id = Column('weather_id', Integer, primary_key=True)
+        zip = Column('zip', Integer)
+        lon = Column('lon', Float)
+        lat = Column('lat', Float)
+        main = Column('main', String)
+        temp = Column('temp', Float)
+        pressure = Column('pressure', Float)
+        humidity = Column('humidity', Integer)
+        dt = Column('dt', Integer)
+        icon_image = Column('icon_image', String)
+        description = Column('description', String)
+        date_time = Column('date_time', String)
 
     # Create schema
     Base.metadata.create_all(engine)

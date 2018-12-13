@@ -19,7 +19,7 @@ ICON_URL = 'http://openweathermap.org/img/w/'
 URL = 'http://api.openweathermap.org/data/2.5/forecast?zip='
 API_KEY = ',us&APPID=29ac044b94fc8a51cb5f14dc0e403d11'
 ACCEPTABLE_TYPES = [int, str, float]
-WEATHER_COLUMNS = ['zip_code', 'lon', 'lat', 'main', 'temp', 'pressure',
+WEATHER_COLUMNS = ['zip', 'lon', 'lat', 'main', 'temp', 'pressure',
                    'humidity', 'dt', 'icon_image', 'description']
 
 def convert_kelvin_to_fahrenheit(temp):
@@ -93,7 +93,7 @@ def create_city_weather_df(zip_code):
         smallest_dict = break_data_into_smalled_dict(data, json_dict['city'])
         city_df = append_city_df(city_df, smallest_dict)
     # Add remaining constants
-    city_df['zip_code'] = zip_code
+    city_df['zip'] = zip_code
     city_df['cod'] = json_dict['cod']
     city_df['message'] = json_dict['message']
     city_df['cnt'] = json_dict['cnt']
