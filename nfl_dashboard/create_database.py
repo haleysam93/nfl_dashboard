@@ -20,6 +20,7 @@ from sqlalchemy.ext.declarative import declarative_base
 import parse_schedule
 import get_news
 from weather_api_table import build_weather_table
+from get_logo_table import getLogoTable
 
 
 def main():
@@ -38,8 +39,8 @@ def main():
     tables['news'] = getNews(tables['teams'])
     # Get weather table
     tables['weather'] = build_weather_table(tables['venues']['zip'].values)
-    #weather = build_weather_table(tables['venues']['zip'].values)
-    print(tables['weather'].head())
+    # Get logo table
+    tables['logos'] = getLogoTable(tables['teams']['alias'].values)
     # Create database schema
     engine = createDatabase(dirname)
     # Append tables to database
@@ -108,7 +109,7 @@ def createDatabase(dirname):
     # Create Engine
     engine = create_engine(
         'sqlite:///{}'.format(dbPath),
-        echo=True)
+        echo=False) # Turning echo to true will print commits to screen
 
     # Initialize declaritive base
     Base = declarative_base()
@@ -126,7 +127,7 @@ def createDatabase(dirname):
         __tablename__ =  'venues'
 
         venues_id = Column('venues_id', Integer, primary_key=True)
-        alias = Column('alias', String)
+        alias = Column('alias', String, ForeignKey('teams.alias'))
         address = Column('address', String)
         capacity = Column('capacity', Integer)
         city = Column('city', String)
@@ -144,8 +145,8 @@ def createDatabase(dirname):
 
         games_id = Column('games_id', Integer, primary_key=True)
         datetime = Column('datetime', String)
-        away = Column('away', String)
-        home = Column('home', String)
+        away = Column('away', String, ForeignKey('teams.alias'))
+        home = Column('home', String, ForeignKey('teams.alias'))
         id = Column('id', String)
         week = Column('week', Integer)
 
@@ -154,7 +155,7 @@ def createDatabase(dirname):
         __tablename__ = 'news'
 
         news_id = Column('news_id', Integer, primary_key=True)
-        alias = Column('alias', String)
+        alias = Column('alias', String, ForeignKey('teams.alias'))
         date = Column('date', String)
         description = Column('description', String)
         source = Column('source', String)
@@ -166,7 +167,7 @@ def createDatabase(dirname):
         __tablename__ = 'weather'
 
         weather_id = Column('weather_id', Integer, primary_key=True)
-        zip = Column('zip', Integer)
+        zip = Column('zip', Integer, ForeignKey('venues.zip'))
         lon = Column('lon', Float)
         lat = Column('lat', Float)
         main = Column('main', String)
@@ -177,6 +178,14 @@ def createDatabase(dirname):
         icon_image = Column('icon_image', String)
         description = Column('description', String)
         date_time = Column('date_time', String)
+
+    class logos(Base):
+
+        __tablename__ = 'logos'
+
+        logos_id = Column('logos_id', Integer, primary_key=True)
+        alias = Column('alias', String, ForeignKey('teams.alias'))
+        logo_url = Column('logo_url', String)
 
     # Create schema
     Base.metadata.create_all(engine)
