@@ -1,0 +1,26 @@
+Lee Alessandrini
+Mitch Ciecierski
+Sam Haley
+
+NFL Database
+
+Purpose:
+Our purpose was to tie together NFL statistics, team and stadium data, NFL news, and weather information to assemble a database with all aspects relevant to games across the NFL.
+
+APIs:
+Google News API:
+	The Google News API was utilized to provide relevant news by passing a search key and time frame.  We use this API to construct our ‘News’ table.  This news could pertain to players, teams, or the upcoming games.
+
+Sports Radar API:
+	The Sports Radar API is used to build tables of stadium, team and statistical information which we obtain by using the Sports Radar API python wrapper.  This API is used to build the ‘Teams’, ‘Games’, and ‘Venues’ tables within our database. 
+
+Open Weather Map API:
+	The Open Weather Map API provides general weather data for requested cities, zip codes, or latitudes and longitudes.  This is the API that the ‘Weather’ table in our database is created from.
+
+Generating Database:
+	To generate our database first callget_nfl_schedule which will query the Sports Radar API and store json data.  We did this to prevent over query the API since we were limited on queries. Once we do that we call create_database which will query the remaining APIs, parse all the json data and use that data to build all of our database tables.
+
+Future Work:
+	Our main plan to utilize this database would be to have it function as the backend of a live NFL dashboard.  The dashboard’s focus would be to have a drop down where the user could select up coming games and get team news, season status and weather information.  We would be able to display a weather logo from the weather API and a team logo from the logo table on this dashboard along side all the relevant NFL data.
+	Becoming paid subscribers to some of the APIs we utilized during this project could also improve the capability of our database.  An example would be subscribing to the weather database would allow us to gain historical weather data to display on the dashboards for games that have already occurred.
+	
